@@ -4,15 +4,12 @@
 #include "Fraction.hpp"
 
 using namespace std;
+
+
 namespace ariel{
 
 
-Fraction::Fraction(float frac)
-{
-    this->numerator = (int)(frac*1000);
-    this->denominator = 1000;
-    this->reduce();
-}
+//  constructors  //
 
 Fraction::Fraction(int nume, int deno)
 {
@@ -22,6 +19,13 @@ Fraction::Fraction(int nume, int deno)
     }
     this->numerator = nume;
     this->denominator = deno;
+    this->reduce();
+}
+
+Fraction::Fraction(float frac)
+{
+    this->numerator = (int)(frac*1000);
+    this->denominator = 1000;
     this->reduce();
 }
 
@@ -38,6 +42,7 @@ Fraction& Fraction::operator=(const Fraction& frac)
 }
 
 Fraction::Fraction(Fraction&& frac) noexcept : numerator(frac.numerator), denominator(frac.denominator){}
+
 Fraction& Fraction::operator=(Fraction&& frac) noexcept
 {
     if(this != &frac)
@@ -47,6 +52,9 @@ Fraction& Fraction::operator=(Fraction&& frac) noexcept
     }
     return *this;
 }
+
+
+//  getters and setters  //
 
 int Fraction::getNumerator() const
 {
@@ -68,6 +76,7 @@ void Fraction::setDenominator(int deno)
     this->denominator = deno;
 }
 
+//  Arithmetic operators between Fractions  //
 Fraction Fraction::operator+(const Fraction& frac) const
 {
     long long nume = (long long) (this->numerator*frac.denominator) + (this->denominator*frac.numerator);
@@ -132,6 +141,8 @@ Fraction Fraction::operator/(const Fraction& frac) const
     return res;
 }
 
+
+//  Comparison operators between Fractions  //
 bool Fraction::operator==(const Fraction& frac) const
 {
     // if(this->numerator==0 && frac.numerator == 0)return true;
@@ -174,8 +185,9 @@ bool Fraction::operator<=(const Fraction& frac) const
     if(nume1 <= nume2) return true;
     return false;
 }
-// bool operator!=(const Fraction& b) const{return false;}
 
+
+//  prefix & postfix operators - addition and submition  //
 Fraction& Fraction::operator++()// ++n
 {
     this->numerator += this->denominator;
@@ -201,9 +213,11 @@ Fraction Fraction::operator--(int num) // n--
     return temp_num;
 }
 
+
+//  Insertion extraction operators  //
 std::ostream& operator<<(std::ostream& output, const Fraction& obj)
 {
-    output << obj.getNumerator() << '/' << obj.getDenominator();
+    output << obj.numerator << '/' << obj.denominator;
     return output;
 }
 
@@ -216,20 +230,17 @@ std::istream& operator>>(std::istream& input, Fraction& obj)
     {
         throw runtime_error("can't divide in zero");
     }
-    obj.setNumerator(nume);
-    obj.setDenominator(deno);
+    obj.numerator = nume;
+    obj.denominator = deno;
     obj.reduce();
     return input;
 }
 
-//operators on Fraction and float
+
+//  Arithmetic operators on Fraction and float  //
 Fraction Fraction::operator+(float num) const
 {
     Fraction temp_num(num);
-    // int nume = (this->numerator*temp_num.denominator) + (this->denominator*temp_num.numerator);
-    // int deno = this->denominator*temp_num.denominator;
-    // Fraction res(nume, deno);
-    // res.reduce();
     return *this+temp_num;
 }
 
@@ -250,6 +261,9 @@ Fraction Fraction::operator/(float num) const
     Fraction temp_num(num);
     return *this/temp_num;
 }
+
+
+//  Comparison operators on Fraction and float  //
 bool Fraction::operator==(float num) const
 {
     Fraction temp_num(num);
@@ -276,7 +290,8 @@ bool Fraction::operator<=(float num) const
     return *this<=temp_num;
 }
 
-//operators on float and Fraction
+
+//  Arithmetic operators on float and Fraction  //
 Fraction operator+(float num, const Fraction& obj)
 {
     Fraction temp_num(num);
@@ -299,6 +314,9 @@ Fraction operator/(float num, const Fraction& obj)
     Fraction temp_num(num);
     return temp_num/ obj;
 }
+
+
+//  Comparison operators on float and Fraction  //
 bool operator==(float num, const Fraction& obj)
 {
     Fraction temp_num(num);
@@ -326,6 +344,7 @@ bool operator<=(float num, const Fraction& obj)
 }
 
 
+//  functions to help reduce the fractions  //
 void Fraction::reduce()
 {
     int num1 = abs(this->numerator);
@@ -363,4 +382,5 @@ int abs(int num)
     if (num < 0) return -1*num;
     else return num;
 }
-}
+
+} // end of ariel namespace
